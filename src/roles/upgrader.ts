@@ -1,4 +1,4 @@
-var roleUpgrader = {
+export var roleUpgrader = {
   /** @param {Creep} creep **/
   run: function(creep: Creep) {
     if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
@@ -24,5 +24,3 @@ var roleUpgrader = {
     }
   }
 };
-
-module.exports = roleUpgrader;
