@@ -13,6 +13,7 @@ declare global {
   interface Memory {
     uuid: number;
     log: any;
+    sequencer: number;
   }
 
   interface CreepMemory {
@@ -31,6 +32,12 @@ declare global {
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
+const creepMinimums = new Map([
+  ["harvester", 3],
+  ["upgrader", 1],
+  ["builder", 2]
+]);
+
 export const loop = ErrorMapper.wrapLoop(() => {
   for (const name in Memory.creeps) {
     if (name in Game.creeps) {
@@ -45,6 +52,25 @@ export const loop = ErrorMapper.wrapLoop(() => {
     } else {
       // Garbage collector
       delete Memory.creeps[name];
+    }
+  }
+  for (const type in creepMinimums.keys) {
+    const count = _(Memory.creeps)
+      .filter({ role: type })
+      .size();
+    if (count < creepMinimums.get(type)!) {
+      Game.spawns["Spawn1"].spawnCreep(
+        [WORK, CARRY, MOVE],
+        type + "_" + Memory.sequencer,
+        {
+          memory: {
+            role: type,
+            room: Game.spawns["Spawn1"].room.name,
+            working: false
+          }
+        }
+      );
+      Memory.sequencer++;
     }
   }
 });
