@@ -1,9 +1,9 @@
-import { roleBuilder } from 'roles/builder';
-import { roleHarvester } from 'roles/harvester';
-import { roleHauler } from 'roles/hauler';
-import { roleUpgrader } from 'roles/upgrader';
-import { ErrorMapper } from 'utils/ErrorMapper';
-import { spawnCreepWithJob } from 'utils/MiscFunctions';
+import { roleBuilder } from "roles/builder";
+import { roleHarvester } from "roles/harvester";
+import { roleHauler } from "roles/hauler";
+import { roleUpgrader } from "roles/upgrader";
+import { ErrorMapper } from "utils/ErrorMapper";
+import { spawnCreepWithJob } from "utils/MiscFunctions";
 
 declare global {
   /*
@@ -48,8 +48,8 @@ const creepBodies = new Map<string, BodyPartConstant[]>([
   ["harvester", [WORK, WORK, MOVE]],
   ["hauler", [CARRY, CARRY, MOVE]],
   ["upgrader", [WORK, CARRY, MOVE]],
-  ["builder", [WORK, CARRY, MOVE]],
-])
+  ["builder", [WORK, CARRY, MOVE]]
+]);
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
@@ -60,16 +60,16 @@ export const loop = ErrorMapper.wrapLoop(() => {
       switch (creep.memory.role) {
         case "harvester":
           roleHarvester.run(creep);
-          continue
+          continue;
         case "hauler":
           roleHauler.run(creep);
-          continue
+          continue;
         case "upgrader":
           roleUpgrader.run(creep);
-          continue
+          continue;
         case "builder":
           roleBuilder.run(creep);
-          continue
+          continue;
       }
     } else {
       // Garbage collector
@@ -82,7 +82,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       .size();
     if (count < creepMinimums.get(type)!) {
       spawnCreepWithJob(Game.spawns["Spawn1"], type, creepBodies.get(type)!);
-      break
+      break;
     }
   }
 });

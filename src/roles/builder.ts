@@ -1,4 +1,4 @@
-import { findEnergy } from 'utils/MiscFunctions';
+import { findEnergy } from "utils/MiscFunctions";
 
 export var roleBuilder = {
   /** @param {Creep} creep **/
