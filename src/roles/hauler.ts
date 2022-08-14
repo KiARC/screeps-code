@@ -4,12 +4,13 @@ export const roleHauler = {
   /** @param {Creep} creep **/
   run: function(creep: Creep) {
     if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-      findEnergy(creep);
+      findEnergy(creep, true);
     } else {
-      const closestReceiver = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+      const closestReceiver = creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: structure =>
           (structure.structureType === STRUCTURE_EXTENSION ||
-            structure.structureType === STRUCTURE_SPAWN) &&
+            structure.structureType === STRUCTURE_SPAWN ||
+            structure.structureType === STRUCTURE_CONTAINER) &&
           structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
       })!;
       if (
