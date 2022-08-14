@@ -55,6 +55,23 @@ const creepBodies = new Map<string, BodyPartConstant[]>([
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
+  if (
+    _(Memory.creeps)
+      .filter({ role: "hauler" })
+      .size() === 0
+  ) {
+    spawnCreepWithJob(
+      Game.spawns["Spawn1"],
+      "hauler",
+      creepBodies.get("hauler")!
+    );
+  } else if (
+    _(Memory.creeps)
+      .filter({ role: "harvester" })
+      .size() === 0
+  ) {
+    spawnCreepWithJob(Game.spawns["Spawn1"], "harvester", [WORK, WORK, MOVE]);
+  }
   for (const name in Memory.creeps) {
     if (name in Game.creeps) {
       const creep = Game.creeps[name];
@@ -76,6 +93,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       // Garbage collector
       delete Memory.creeps[name];
     }
+    } else delete Memory.creeps[name];
   }
   for (const type of Array.from(creepMinimums.keys())) {
     const count = _(Memory.creeps)
