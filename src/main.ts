@@ -47,8 +47,8 @@ const creepMinimums = new Map([
 const creepBodies = new Map<string, BodyPartConstant[]>([
   ["harvester", [WORK, WORK, MOVE]],
   ["hauler", [CARRY, CARRY, MOVE]],
-  ["upgrader", [WORK, CARRY, MOVE]],
-  ["builder", [WORK, CARRY, MOVE]]
+  ["upgrader", [WORK, WORK, CARRY, CARRY, MOVE]],
+  ["builder", [WORK, WORK, CARRY, MOVE]]
 ]);
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
