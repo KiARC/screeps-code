@@ -1,4 +1,5 @@
 import { ErrorMapper } from 'utils/ErrorMapper';
+import { spawnBasicCreepWithJob } from 'utils/MiscFunctions';
 
 import { roleBuilder } from './roles/builder';
 import { roleHarvester } from './roles/harvester';
@@ -62,6 +63,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
   }
   for (const type in creepMinimums.keys) {
+  for (const type of Array.from(creepMinimums.keys())) {
     const count = _(Memory.creeps)
       .filter({ role: type })
       .size();
@@ -78,6 +80,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
         }
       );
       Memory.sequencer++;
+      spawnBasicCreepWithJob(Game.spawns["Spawn1"], type);
     }
   }
 });
