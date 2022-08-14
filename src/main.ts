@@ -38,14 +38,15 @@ declare global {
 if (Memory.sequencer === undefined) Memory.sequencer = 0; //Initialize sequencer if it isn't present
 
 const creepMinimums = new Map([
-  ["harvester", 4],
+  ["harvester", 2],
   ["hauler", 3],
   ["upgrader", 5],
   ["builder", 5]
 ]);
 
 const creepBodies = new Map<string, BodyPartConstant[]>([
-  ["harvester", [WORK, WORK, MOVE]], //Costs 250
+  //["harvester", [WORK, WORK, MOVE]], //Costs 250, for pre-RCL2
+  ["harvester", [WORK, WORK, WORK, WORK, WORK, MOVE]], //Costs 550
   ["hauler", [CARRY, CARRY, MOVE, MOVE]], //Costs 200
   ["upgrader", [WORK, WORK, CARRY, CARRY, MOVE, MOVE]], //Costs 400
   ["builder", [WORK, WORK, CARRY, MOVE]] //Costs 300
