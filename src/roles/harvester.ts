@@ -1,4 +1,4 @@
-export var roleHarvester = {
+export const roleHarvester = {
   /** @param {Creep} creep **/
   run: function(creep: Creep) {
     var sources = creep.room.find(FIND_SOURCES);

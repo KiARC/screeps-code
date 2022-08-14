@@ -1,4 +1,4 @@
-export var roleHauler = {
+export const roleHauler = {
   /** @param {Creep} creep **/
   run: function(creep: Creep) {
     if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
