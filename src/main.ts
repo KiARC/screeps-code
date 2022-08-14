@@ -1,9 +1,9 @@
-import { roleBuilder } from 'roles/builder';
-import { roleHarvester } from 'roles/harvester';
-import { roleHauler } from 'roles/hauler';
-import { roleUpgrader } from 'roles/upgrader';
-import { ErrorMapper } from 'utils/ErrorMapper';
-import { spawnCreepWithJob } from 'utils/MiscFunctions';
+import { roleBuilder } from "roles/builder";
+import { roleHarvester } from "roles/harvester";
+import { roleHauler } from "roles/hauler";
+import { roleUpgrader } from "roles/upgrader";
+import { ErrorMapper } from "utils/ErrorMapper";
+import { spawnCreepWithJob } from "utils/MiscFunctions";
 
 declare global {
   /*
@@ -45,13 +45,31 @@ const creepMinimums = new Map([
   ["builder", 5]
 ]);
 
+const smallCreepBodies = new Map<string, BodyPartConstant[]>([
+  ["harvester", [WORK, WORK, MOVE]], //Costs 250, for pre-RCL2
   ["hauler", [CARRY, CARRY, MOVE, MOVE]], //Costs 200
+  ["upgrader", [WORK, WORK, CARRY, MOVE]], //Costs 300
   ["builder", [WORK, WORK, CARRY, MOVE]] //Costs 300
 ]);
+
+const bigCreepBodies = new Map<string, BodyPartConstant[]>([
+  ["harvester", [WORK, WORK, WORK, WORK, WORK, MOVE]], //Costs 550
+  ["hauler", [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE]], //Costs 300
+  ["upgrader", [WORK, WORK, CARRY, CARRY, MOVE]], //Costs 350
+  ["builder", [WORK, WORK, CARRY, MOVE]] //Costs 300
+]);
+
+var bigCreeps = false;
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
+  if (Game.time % 15 === 0)
+    bigCreeps =
+      Game.spawns["Spawn1"].room.find(FIND_MY_STRUCTURES, {
+        filter: structure => structure.structureType === STRUCTURE_EXTENSION
+      }).length >= 5;
+  Memory.harvestedSources = Array();
   if (
     _(Memory.creeps)
       .filter({ role: "hauler" })
@@ -60,14 +78,18 @@ export const loop = ErrorMapper.wrapLoop(() => {
     spawnCreepWithJob(
       Game.spawns["Spawn1"],
       "hauler",
-      creepBodies.get("hauler")!
+      smallCreepBodies.get("hauler")!
     );
   } else if (
     _(Memory.creeps)
       .filter({ role: "harvester" })
       .size() === 0
   ) {
-    spawnCreepWithJob(Game.spawns["Spawn1"], "harvester", [WORK, WORK, MOVE]);
+    spawnCreepWithJob(
+      Game.spawns["Spawn1"],
+      "harvester",
+      smallCreepBodies.get("harvester")!
+    );
   }
   for (const name in Memory.creeps) {
     if (name in Game.creeps) {
@@ -93,7 +115,19 @@ export const loop = ErrorMapper.wrapLoop(() => {
       .filter({ role: type })
       .size();
     if (count < creepMinimums.get(type)!) {
-      spawnCreepWithJob(Game.spawns["Spawn1"], type, creepBodies.get(type)!);
+      if (bigCreeps) {
+        spawnCreepWithJob(
+          Game.spawns["Spawn1"],
+          type,
+          bigCreepBodies.get(type)!
+        );
+      } else {
+        spawnCreepWithJob(
+          Game.spawns["Spawn1"],
+          type,
+          smallCreepBodies.get(type)!
+        );
+      }
       break;
     }
   }
