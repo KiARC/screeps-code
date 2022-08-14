@@ -12,3 +12,15 @@ export function spawnCreepWithJob(spawn: StructureSpawn, job: string, body: Body
   );
   Memory.sequencer++;
 }
+
+export function findEnergy(creep: Creep) {
+    const droppedEnergy = creep.room.find(FIND_DROPPED_RESOURCES, {
+        filter: resource => resource.resourceType == RESOURCE_ENERGY
+      });
+      const closestDropEnergy = creep.pos.findClosestByRange(droppedEnergy)!;
+      if (creep.pickup(closestDropEnergy) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(closestDropEnergy, {
+          visualizePathStyle: { stroke: "#ffaa00" }
+        });
+      }
+}
