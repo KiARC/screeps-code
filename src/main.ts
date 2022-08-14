@@ -40,15 +40,15 @@ if (Memory.sequencer === undefined) Memory.sequencer = 0; //Initialize sequencer
 const creepMinimums = new Map([
   ["harvester", 4],
   ["hauler", 3],
-  ["upgrader", 3],
-  ["builder", 3]
+  ["upgrader", 5],
+  ["builder", 5]
 ]);
 
 const creepBodies = new Map<string, BodyPartConstant[]>([
-  ["harvester", [WORK, WORK, MOVE]],
-  ["hauler", [CARRY, CARRY, MOVE]],
-  ["upgrader", [WORK, WORK, CARRY, CARRY, MOVE]],
-  ["builder", [WORK, WORK, CARRY, MOVE]]
+  ["harvester", [WORK, WORK, MOVE]], //Costs 250
+  ["hauler", [CARRY, CARRY, MOVE, MOVE]], //Costs 200
+  ["upgrader", [WORK, WORK, CARRY, CARRY, MOVE, MOVE]], //Costs 400
+  ["builder", [WORK, WORK, CARRY, MOVE]] //Costs 300
 ]);
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
