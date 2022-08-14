@@ -1,10 +1,9 @@
+import { roleBuilder } from 'roles/builder';
+import { roleHarvester } from 'roles/harvester';
 import { roleHauler } from 'roles/hauler';
+import { roleUpgrader } from 'roles/upgrader';
 import { ErrorMapper } from 'utils/ErrorMapper';
-import { spawnBasicCreepWithJob } from 'utils/MiscFunctions';
-
-import { roleBuilder } from './roles/builder';
-import { roleHarvester } from './roles/harvester';
-import { roleUpgrader } from './roles/upgrader';
+import { spawnCreepWithJob } from 'utils/MiscFunctions';
 
 declare global {
   /*
