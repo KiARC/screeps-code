@@ -38,10 +38,10 @@ declare global {
 if (Memory.sequencer === undefined) Memory.sequencer = 0; //Initialize sequencer if it isn't present
 
 const creepMinimums = new Map([
-  ["harvester", 6],
+  ["harvester", 4],
   ["hauler", 3],
-  ["upgrader", 1],
-  ["builder", 2]
+  ["upgrader", 3],
+  ["builder", 3]
 ]);
 
 const creepBodies = new Map<string, BodyPartConstant[]>([
@@ -82,6 +82,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       .size();
     if (count < creepMinimums.get(type)!) {
       spawnCreepWithJob(Game.spawns["Spawn1"], type, creepBodies.get(type)!);
+      break
     }
   }
 });
