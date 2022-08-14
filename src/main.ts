@@ -36,12 +36,15 @@ declare global {
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
+if (Memory.sequencer === undefined) Memory.sequencer = 0; //Initialize sequencer if it isn't present
 const creepMinimums = new Map([
   ["harvester", 3],
   ["upgrader", 1],
   ["builder", 2]
 ]);
 
+// When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
+// This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
   for (const name in Memory.creeps) {
     if (name in Game.creeps) {
