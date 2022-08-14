@@ -46,7 +46,7 @@ const creepMinimums = new Map([
 
 const creepBodies = new Map<string, BodyPartConstant[]>([
   ["harvester", [WORK, WORK, MOVE]],
-  ["hauler", [WORK, CARRY, MOVE]],
+  ["hauler", [CARRY, CARRY, MOVE]],
   ["upgrader", [WORK, CARRY, MOVE]],
   ["builder", [WORK, CARRY, MOVE]],
 ])
