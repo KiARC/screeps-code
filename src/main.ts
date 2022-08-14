@@ -1,9 +1,9 @@
-import { roleBuilder } from "roles/builder";
-import { roleHarvester } from "roles/harvester";
-import { roleHauler } from "roles/hauler";
-import { roleUpgrader } from "roles/upgrader";
-import { ErrorMapper } from "utils/ErrorMapper";
-import { spawnCreepWithJob } from "utils/MiscFunctions";
+import { roleBuilder } from 'roles/builder';
+import { roleHarvester } from 'roles/harvester';
+import { roleHauler } from 'roles/hauler';
+import { roleUpgrader } from 'roles/upgrader';
+import { ErrorMapper } from 'utils/ErrorMapper';
+import { spawnCreepWithJob } from 'utils/MiscFunctions';
 
 declare global {
   /*
@@ -19,6 +19,7 @@ declare global {
     uuid: number;
     log: any;
     sequencer: number;
+    harvestedSources: Array<Source>;
   }
 
   interface CreepMemory {
@@ -44,11 +45,7 @@ const creepMinimums = new Map([
   ["builder", 5]
 ]);
 
-const creepBodies = new Map<string, BodyPartConstant[]>([
-  //["harvester", [WORK, WORK, MOVE]], //Costs 250, for pre-RCL2
-  ["harvester", [WORK, WORK, WORK, WORK, WORK, MOVE]], //Costs 550
   ["hauler", [CARRY, CARRY, MOVE, MOVE]], //Costs 200
-  ["upgrader", [WORK, WORK, CARRY, CARRY, MOVE, MOVE]], //Costs 400
   ["builder", [WORK, WORK, CARRY, MOVE]] //Costs 300
 ]);
 
@@ -89,10 +86,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
           roleBuilder.run(creep);
           continue;
       }
-    } else {
-      // Garbage collector
-      delete Memory.creeps[name];
-    }
     } else delete Memory.creeps[name];
   }
   for (const type of Array.from(creepMinimums.keys())) {

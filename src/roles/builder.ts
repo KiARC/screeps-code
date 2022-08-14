@@ -5,20 +5,16 @@ export var roleBuilder = {
   run: function(creep: Creep) {
     if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
       creep.memory.working = false;
-      creep.say("🔄 harvest");
-    }
-    if (!creep.memory.working && creep.store.getFreeCapacity() == 0) {
+    } else if (!creep.memory.working && creep.store.getFreeCapacity() == 0) {
       creep.memory.working = true;
-      creep.say("🚧 build");
     }
-
     if (creep.memory.working) {
       const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
       if (targets.length) {
         const closestTarget = creep.pos.findClosestByRange(targets)!;
         if (creep.build(closestTarget) == ERR_NOT_IN_RANGE) {
           creep.moveTo(closestTarget, {
-            visualizePathStyle: { stroke: "#ffffff" }
+            visualizePathStyle: { stroke: "#aa00ff", lineStyle: "solid" }
           });
         }
       }

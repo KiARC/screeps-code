@@ -28,7 +28,7 @@ export function findEnergy(creep: Creep) {
   const closestDropEnergy = creep.pos.findClosestByRange(droppedEnergy)!;
   if (creep.pickup(closestDropEnergy) == ERR_NOT_IN_RANGE) {
     creep.moveTo(closestDropEnergy, {
-      visualizePathStyle: { stroke: "#ffaa00" }
+      visualizePathStyle: { stroke: "#00ff00", lineStyle: "solid" }
     });
   }
 }
