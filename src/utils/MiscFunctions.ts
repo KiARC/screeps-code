@@ -1,6 +1,6 @@
-export function spawnBasicCreepWithJob(spawn: StructureSpawn, job: string) {
+export function spawnCreepWithJob(spawn: StructureSpawn, job: string, body: BodyPartConstant[]) {
   spawn.spawnCreep(
-    [WORK, CARRY, MOVE],
+    body,
     job.concat("_", Memory.sequencer.toString()),
     {
       memory: {

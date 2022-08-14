@@ -36,12 +36,20 @@ declare global {
 }
 
 if (Memory.sequencer === undefined) Memory.sequencer = 0; //Initialize sequencer if it isn't present
+
 const creepMinimums = new Map([
   ["harvester", 6],
   ["hauler", 3],
   ["upgrader", 1],
   ["builder", 2]
 ]);
+
+const creepBodies = new Map<string, BodyPartConstant[]>([
+  ["harvester", [WORK, WORK, MOVE]],
+  ["hauler", [WORK, CARRY, MOVE]],
+  ["upgrader", [WORK, CARRY, MOVE]],
+  ["builder", [WORK, CARRY, MOVE]],
+])
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
@@ -73,7 +81,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       .filter({ role: type })
       .size();
     if (count < creepMinimums.get(type)!) {
-      spawnBasicCreepWithJob(Game.spawns["Spawn1"], type);
+      spawnCreepWithJob(Game.spawns["Spawn1"], type, creepBodies.get(type)!);
     }
   }
 });
