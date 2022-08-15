@@ -39,10 +39,13 @@ declare global {
 if (Memory.sequencer === undefined) Memory.sequencer = 0; //Initialize sequencer if it isn't present
 
 const creepMinimums = new Map([
+  ["hauler", 2],
   ["harvester", 2],
   ["hauler", 3],
   ["upgrader", 5],
   ["builder", 5]
+  ["builder", 5],
+  ["upgrader", 5]
 ]);
 
 const smallCreepBodies = new Map<string, BodyPartConstant[]>([
@@ -50,6 +53,9 @@ const smallCreepBodies = new Map<string, BodyPartConstant[]>([
   ["hauler", [CARRY, CARRY, MOVE, MOVE]], //Costs 200
   ["upgrader", [WORK, WORK, CARRY, MOVE]], //Costs 300
   ["builder", [WORK, WORK, CARRY, MOVE]] //Costs 300
+  ["harvester", [WORK, WORK, MOVE]], //Costs 250
+  ["builder", [WORK, WORK, CARRY, MOVE]], //Costs 300
+  ["upgrader", [WORK, WORK, CARRY, MOVE]] //Costs 300
 ]);
 
 const bigCreepBodies = new Map<string, BodyPartConstant[]>([
@@ -57,6 +63,9 @@ const bigCreepBodies = new Map<string, BodyPartConstant[]>([
   ["hauler", [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE]], //Costs 300
   ["upgrader", [WORK, WORK, CARRY, CARRY, MOVE]], //Costs 350
   ["builder", [WORK, WORK, CARRY, MOVE]] //Costs 300
+  ["harvester", [WORK, WORK, WORK, WORK, WORK, MOVE]], //Costs 550
+  ["builder", [WORK, WORK, CARRY, MOVE]], //Costs 300
+  ["upgrader", [WORK, WORK, CARRY, CARRY, MOVE]] //Costs 350
 ]);
 
 var bigCreeps = false;
@@ -103,9 +112,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
           continue;
         case "upgrader":
           roleUpgrader.run(creep);
+        case "harvester":
+          roleHarvester.run(creep);
           continue;
         case "builder":
           roleBuilder.run(creep);
+          continue;
+        case "upgrader":
+          roleUpgrader.run(creep);
           continue;
       }
     } else delete Memory.creeps[name];
