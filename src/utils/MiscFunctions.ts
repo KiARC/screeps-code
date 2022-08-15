@@ -10,7 +10,8 @@ export function spawnCreepWithJob(
       memory: {
         role: job,
         room: spawn.room.name,
-        working: false
+        working: false,
+        lastDirection: TOP_LEFT
       }
     }
   );
@@ -31,7 +32,8 @@ export function findEnergy(creep: Creep, ignoreContainers: boolean = false) {
     if (container !== undefined && container !== null) {
       if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(container, {
-          visualizePathStyle: { stroke: "#00ff00", lineStyle: "solid" }
+          visualizePathStyle: { stroke: "#00ff00", lineStyle: "solid" },
+          reusePath: 200
         });
       }
       return;
@@ -42,7 +44,8 @@ export function findEnergy(creep: Creep, ignoreContainers: boolean = false) {
   })!;
   if (creep.pickup(droppedEnergy) == ERR_NOT_IN_RANGE) {
     creep.moveTo(droppedEnergy, {
-      visualizePathStyle: { stroke: "#00ff00", lineStyle: "solid" }
+      visualizePathStyle: { stroke: "#00ff00", lineStyle: "solid" },
+      reusePath: 200
     });
   }
 }

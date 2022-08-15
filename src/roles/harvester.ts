@@ -7,7 +7,8 @@ export const roleHarvester = {
     )!;
     if (creep.harvest(closestAvailableSource) == ERR_NOT_IN_RANGE) {
       creep.moveTo(closestAvailableSource, {
-        visualizePathStyle: { stroke: "#aa00ff", lineStyle: "solid" }
+        visualizePathStyle: { stroke: "#aa00ff", lineStyle: "solid" },
+        reusePath: 200
       });
     } else {
       Memory.harvestedSources.push(closestAvailableSource);

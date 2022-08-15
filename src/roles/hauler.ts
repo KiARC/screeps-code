@@ -17,7 +17,8 @@ export const roleHauler = {
         creep.transfer(closestReceiver, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
       ) {
         creep.moveTo(closestReceiver, {
-          visualizePathStyle: { stroke: "#aa00ff", lineStyle: "solid" }
+          visualizePathStyle: { stroke: "#aa00ff", lineStyle: "solid" },
+          reusePath: 200
         });
       }
     }

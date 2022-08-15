@@ -11,10 +11,19 @@ export var roleBuilder = {
     if (creep.memory.working) {
       const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
       if (targets.length) {
-        const closestTarget = creep.pos.findClosestByRange(targets)!;
-        if (creep.build(closestTarget) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(closestTarget, {
-            visualizePathStyle: { stroke: "#aa00ff", lineStyle: "solid" }
+        const notRoads = targets.filter(
+          structure => structure.structureType !== STRUCTURE_ROAD
+        );
+        var target: ConstructionSite;
+        if (notRoads.length) {
+          target = notRoads[0];
+        } else {
+          target = targets[0];
+        }
+        if (creep.build(target) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(target, {
+            visualizePathStyle: { stroke: "#aa00ff", lineStyle: "solid" },
+            reusePath: 200
           });
         }
       }
