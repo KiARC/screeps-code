@@ -1,4 +1,11 @@
-import { findEnergy } from "utils/MiscFunctions";
+import { findEnergy } from 'utils/MiscFunctions';
+
+const priorities = [
+  STRUCTURE_EXTENSION,
+  STRUCTURE_SPAWN,
+  STRUCTURE_TOWER,
+  STRUCTURE_CONTAINER
+];
 
 export const roleHauler = {
   /** @param {Creep} creep **/
@@ -6,19 +13,30 @@ export const roleHauler = {
     if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
       findEnergy(creep, true);
     } else {
-      const closestReceiver = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      const targets = creep.room.find(FIND_STRUCTURES, {
         filter: structure =>
           (structure.structureType === STRUCTURE_EXTENSION ||
             structure.structureType === STRUCTURE_SPAWN ||
             structure.structureType === STRUCTURE_CONTAINER) &&
           structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-      })!;
-      if (
-        creep.transfer(closestReceiver, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-      ) {
-        creep.moveTo(closestReceiver, {
-          visualizePathStyle: { stroke: "#aa00ff", lineStyle: "solid" }
-        });
+      });
+      var foundWork = false;
+      for (const type of priorities) {
+        const filtered = targets.filter(
+          target => target.structureType === type
+        );
+        if (filtered.length) {
+          foundWork = true;
+          const closestTarget = creep.pos.findClosestByRange(filtered)!;
+          if (
+            creep.transfer(closestTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+          ) {
+            creep.moveTo(closestTarget, {
+              visualizePathStyle: { stroke: "#aa00ff", lineStyle: "solid" }
+            });
+          }
+        }
+        if (foundWork) break;
       }
     }
   }
