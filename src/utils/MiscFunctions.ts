@@ -18,9 +18,6 @@ export function spawnCreepWithJob(
   return ret;
 }
 
-declare var global: any;
-global.spawnCreepWithJob = spawnCreepWithJob;
-
 export function findEnergy(creep: Creep, ignoreContainers: boolean = false) {
   if (!ignoreContainers) {
     const container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -46,3 +43,21 @@ export function findEnergy(creep: Creep, ignoreContainers: boolean = false) {
     });
   }
 }
+
+export function closestAtDistance(
+  flood: CostMatrix,
+  dist: CostMatrix,
+  roomName: string
+): RoomPosition {
+  let currentSpot = { x: 0, y: 0, distance: Infinity };
+  for (let x = 1; x <= 50; x++) {
+    for (let y = 1; y <= 50; y++) {
+      if (dist.get(x, y) > 1 && flood.get(x, y) < currentSpot.distance)
+        currentSpot = { x: x, y: y, distance: flood.get(x, y) };
+    }
+  }
+  return new RoomPosition(currentSpot.x, currentSpot.y, roomName);
+}
+
+declare let global: any;
+global.spawnCreepWithJob = spawnCreepWithJob;

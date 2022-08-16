@@ -1,27 +1,20 @@
+import 'utils/Room Extension';
+
 import { roleBuilder } from 'roles/builder';
 import { roleHarvester } from 'roles/harvester';
 import { roleHauler } from 'roles/hauler';
 import { roleUpgrader } from 'roles/upgrader';
 import { ErrorMapper } from 'utils/ErrorMapper';
 import { spawnCreepWithJob } from 'utils/MiscFunctions';
-import { planRoads } from 'utils/RoomPlanning';
+import { planContainers, planExtensions, planRoads } from 'utils/RoomPlanning';
 
 declare global {
-  /*
-    Example types, expand on these or remove them and add your own.
-    Note: Values, properties defined here do no fully *exist* by this type definiton alone.
-          You must also give them an implemention if you would like to use them. (ex. actually setting a `role` property in a Creeps memory)
-
-    Types added in this `global` block are in an ambient, global context. This is needed because `main.ts` is a module file (uses import or export).
-    Interfaces matching on name from @types/screeps will be merged. This is how you can extend the 'built-in' interfaces from @types/screeps.
-  */
-  // Memory extension samples
   interface Memory {
     uuid: number;
     log: any;
     sequencer: number;
     harvestedSources: Array<Source>;
-    plannedRooms: Array<String>;
+    plannedRoads: Array<String>;
   }
 
   interface CreepMemory {
@@ -30,6 +23,26 @@ declare global {
     working: boolean;
   }
 
+  interface Room {
+    distanceTransform(
+      initialCM: CostMatrix,
+      enableVisuals: boolean,
+      x1: number,
+      y1: number,
+      x2: number,
+      y2: number
+    ): CostMatrix;
+    diagonalDistanceTransform(
+      initialCM: CostMatrix,
+      enableVisuals: boolean,
+      x1: number,
+      y1: number,
+      x2: number,
+      y2: number
+    ): CostMatrix;
+    walls(): CostMatrix;
+    floodFill(seeds: Array<RoomPosition>, enableVisuals: boolean): CostMatrix;
+  }
   // Syntax for adding proprties to `global` (ex "global.log")
   namespace NodeJS {
     interface Global {
@@ -39,12 +52,12 @@ declare global {
 }
 
 if (Memory.sequencer === undefined) Memory.sequencer = 0; //Initialize sequencer if it isn't present
-if (Memory.plannedRooms === undefined) Memory.plannedRooms = []; //Initialize sequencer if it isn't present
+if (Memory.plannedRoads === undefined) Memory.plannedRoads = []; //Initialize sequencer if it isn't present
 
 const creepMinimums = new Map([
-  ["hauler", 1],
-  ["harvester", 1],
-  ["builder", 5],
+  ["hauler", 2],
+  ["harvester", 2],
+  ["builder", 4],
   ["upgrader", 5]
 ]);
 
@@ -62,22 +75,32 @@ const bigCreepBodies = new Map<string, BodyPartConstant[]>([
   ["upgrader", [WORK, WORK, CARRY, CARRY, MOVE]] //Costs 350
 ]);
 
-var bigCreeps = false;
+let bigCreeps = false;
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
-  if (Game.time % 15 === 0) {
+  if (Game.time % 50 === 0) {
     bigCreeps =
       Game.spawns["Spawn1"].room.find(FIND_MY_STRUCTURES, {
         filter: structure => structure.structureType === STRUCTURE_EXTENSION
       }).length >= 5;
     for (const name in Game.spawns) {
       const room = Game.spawns[name].room;
-      if (!Memory.plannedRooms.includes(room.name)) {
+      if (!Memory.plannedRoads.includes(room.name)) {
         planRoads(room);
-        Memory.plannedRooms.push(room.name);
+        Memory.plannedRoads.push(room.name);
+      } else if (
+        room.find(FIND_STRUCTURES, {
+          filter: structure => structure.structureType === STRUCTURE_CONTAINER
+        }).length < 5 &&
+        room.find(FIND_CONSTRUCTION_SITES, {
+          filter: structure => structure.structureType === STRUCTURE_CONTAINER
+        }).length < 5
+      ) {
+        planContainers(room);
       }
+      planExtensions(room);
     }
   }
   Memory.harvestedSources = Array();
